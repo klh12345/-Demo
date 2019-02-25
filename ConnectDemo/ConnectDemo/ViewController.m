@@ -38,7 +38,8 @@
 @property (strong , nonatomic) NSMutableArray *indexArray;
 @property (strong , nonatomic) NSMutableArray *searchArray;
 @property (strong , nonatomic) UITableView *tableView;
-
+@property (assign , nonatomic) NSInteger allCount;//总计
+@property (strong , nonatomic) NSMutableArray *selectArray;//选中的数据
 @property (strong , nonatomic) BottomeView *bottom;
 @end
 
@@ -76,17 +77,11 @@ static NSString *const ConnectCellID = @"ConnectCell";
 
 
     [self.tableView reloadData];
- 
+
+   
     
-   
-    MLLog(@"%f", NAVIGATIONBARHEIGHT);
-   
-  
-   
     
 }
-
-
 
 
 // 底部数据统计框
@@ -149,16 +144,18 @@ static NSString *const ConnectCellID = @"ConnectCell";
             CNPhoneNumber *number = values.value;
 
              NSString *photo = [number.stringValue stringByReplacingOccurrencesOfString:@"-" withString:@""];
-
             model.phone = photo;
         }
 
         [self.contactArray addObject:model];
+        
     }];
-
-
+    
+    self.allCount = self.contactArray.count;
+    
+    self.bottom.selectStatus.text = [NSString stringWithFormat:@"选中0总计%ld",self.allCount];
+    
 }
-
 
 
 // 创建索引数组
@@ -175,7 +172,7 @@ static NSString *const ConnectCellID = @"ConnectCell";
         
     }
     
-    // 手写字母去重
+    // 首字母去重
     NSMutableArray *preperArray = [NSMutableArray array];
     
     for (int i = 0;i < array.count;i ++) {
@@ -185,7 +182,7 @@ static NSString *const ConnectCellID = @"ConnectCell";
         }
     }
     
-    // 把无需的数组使用数组排序方法回归有序
+    // 把无序的数组使用数组排序方法回归有序
     NSArray *sortedArray = [preperArray sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
         return [obj1 compare:obj2];
     }];
@@ -213,7 +210,6 @@ static NSString *const ConnectCellID = @"ConnectCell";
     self.contactArray = [NSMutableArray arrayWithArray:array];
     
 }
-
 
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
@@ -289,9 +285,6 @@ static NSString *const ConnectCellID = @"ConnectCell";
     
     [view addSubview:label];
     
-    
-    
-    
     return view;
     
 }
@@ -343,12 +336,26 @@ static NSString *const ConnectCellID = @"ConnectCell";
     
    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
     
+    ConnectModel *model = self.contactArray[indexPath.section][indexPath.row];
     
+    model.isSelected = cell.selectbtn.selected;
+
+    if (model.isSelected) {
+        if (![self.selectArray containsObject:model]) {
+            [self.selectArray addObject:model];
+        }
+    }else{
+        if ([self.selectArray containsObject:model]) {
+            [self.selectArray removeObject:model];
+        }
+        
+    }
     
+    [self.tableView reloadData];
+    
+    NSLog(@"%@",self.selectArray);
     
 }
-
-
 
 
 
@@ -420,6 +427,14 @@ static NSString *const ConnectCellID = @"ConnectCell";
         _searchArray = [NSMutableArray array];
     }
     return _searchArray;
+}
+
+- (NSMutableArray *)selectArray{
+    
+    if (!_selectArray) {
+        _selectArray = [NSMutableArray array];
+    }
+    return _selectArray;
 }
 
 @end

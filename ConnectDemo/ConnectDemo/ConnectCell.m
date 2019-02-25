@@ -76,6 +76,10 @@
     self.connect.text = model.name;
     self.numbers.text = model.phone;
     
+    
+    self.selectbtn.selected = model.isSelected;
+   
+    
 }
 
 @end

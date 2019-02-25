@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ConnectModel : NSObject
 
+@property (assign , nonatomic) BOOL isSelected;//选中
 @property (strong , nonatomic) NSString *initial;// 索引值 Section
 @property (strong , nonatomic) NSString *name;
 @property (strong , nonatomic) NSString *phone;
