@@ -353,7 +353,7 @@ static NSString *const ConnectCellID = @"ConnectCell";
     
     [self.tableView reloadData];
     
-    NSLog(@"%@",self.selectArray);
+    self.bottom.selectStatus.text = [NSString stringWithFormat:@"选中:%lu共计: %ld",(unsigned long)self.selectArray.count,self.allCount];
     
 }
 
